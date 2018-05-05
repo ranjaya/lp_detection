@@ -3,7 +3,7 @@ from keras.utils.io_utils import HDF5Matrix
 from keras.applications import VGG16
 from keras.optimizers import Adam
 from keras.models import Model
-from keras.layers import Dense, Flatten
+from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import backend as K
@@ -16,8 +16,8 @@ from keras import backend as K
 
 def lp_train_generator():
     i=0
-    img_data = HDF5Matrix('C:/Users/Ricky/PycharmProjects/untitled/lp_train.h5','images')
-    lbl_data = HDF5Matrix('C:/Users/Ricky/PycharmProjects/untitled/lp_train.h5','labels')
+    img_data = HDF5Matrix('lp_train.h5','images')
+    lbl_data = HDF5Matrix('lp_train.h5','labels')
     size = 1582
 
     while 1:
@@ -31,8 +31,8 @@ def lp_train_generator():
 
 def lp_valid_generator():
     i=0
-    img_data = HDF5Matrix('C:/Users/Ricky/PycharmProjects/untitled/lp_valid.h5','images')
-    lbl_data = HDF5Matrix('C:/Users/Ricky/PycharmProjects/untitled/lp_valid.h5','labels')
+    img_data = HDF5Matrix('lp_valid.h5','images')
+    lbl_data = HDF5Matrix('lp_valid.h5','labels')
     size = 339
 
     while 1:
@@ -46,8 +46,8 @@ def lp_valid_generator():
 
 def lp_test_generator():
     i=0
-    img_data = HDF5Matrix('C:/Users/Ricky/PycharmProjects/untitled/lp_test.h5','images')
-    lbl_data = HDF5Matrix('C:/Users/Ricky/PycharmProjects/untitled/lp_test.h5','labels')
+    img_data = HDF5Matrix('lp_test.h5','images')
+    lbl_data = HDF5Matrix('lp_test.h5','labels')
     size = 339
 
     while 1:
@@ -88,10 +88,10 @@ def iou(y_true,y_pred):
 
     #calculation for IoU
     and_x1, and_y1 = K.maximum(x1,x2), K.maximum(y1,y2)
-    and_x2, and_y2 = K.minimum(x1,x2), K.minimum(y1,y2)
+    and_x2, and_y2 = K.minimum(x1+w1,x2+w2), K.minimum(y1+h1,y2+h2)
 
-    and_w = and_x2 - and_x1
-    and_h = and_y2 - and_y1
+    and_w = K.maximum(min, and_x2 - and_x1)
+    and_h = K.maximum(min, and_y2 - and_y1)
 
     # if K.less_equal(and_w, min) and K.less_equal(and_h, min):
     #     return K.cast(0, dtype='float32')
@@ -100,7 +100,7 @@ def iou(y_true,y_pred):
     area2 = w2*h2
     or_area = area1 + area2 - and_area
 
-    return and_area / or_area
+    return K.maximum(min, and_area / or_area)
 
 
 if __name__ == '__main__':
@@ -124,14 +124,14 @@ if __name__ == '__main__':
     ###model vgg
     base_model = VGG16(input_shape=(320,240,3),include_top=False,classes=num_classes)
     x = base_model.get_layer('block5_pool').output
-    flatten = Flatten(name='flatten')(x)
+    avg_pool = GlobalAveragePooling2D(name='avg_pool')(x)
     # detection = Dense(4, activation='sigmoid', name='fcnew1')(flatten)
     #detection = Dense(2048, activation='relu', name='fcnew1')(flatten)
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
     #detection = Dense(2048, activation='relu', name='fcnew2')(detection)
     #new - add 1 more dense
-    detection = Dense(4, activation='sigmoid', name='fcnew')(detection)
+    detection = Dense(4, activation='sigmoid', name='fcnew')(avg_pool)
 
     #create custom vgg
     custom_model = Model(inputs = base_model.input, outputs = detection)
