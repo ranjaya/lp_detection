@@ -3,7 +3,7 @@ from keras.utils.io_utils import HDF5Matrix
 from keras.applications import VGG16
 from keras.optimizers import Adam
 from keras.models import Model
-from keras.layers import Dense, Flatten, GlobalAveragePooling2D
+from keras.layers import Dense, Flatten, GlobalAveragePooling2D, Conv2D, MaxPooling2D, GlobalAveragePooling2D, Dropout
 
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import backend as K
@@ -74,8 +74,7 @@ def iou(y_true,y_pred):
     w2 = y_true[0][2]
     h2 = y_true[0][3]
 
-    print('x1 = ', x1)
-
+    
     #convert the value of each variable from normalize form to integer
     min = K.cast(0, dtype='float32')
     max_xw = K.cast(320, dtype='float32')
@@ -111,9 +110,9 @@ if __name__ == '__main__':
     nb_epoch = 100
     init_epoch = 0
 
-    batch_size = 16
+    batch_size = 32
 
-    # lr = 1e-03
+    #lr = 1e-03
     lr = 1e-04
 
     train_size = 1582
@@ -129,16 +128,17 @@ if __name__ == '__main__':
     #detection = Dense(2048, activation='relu', name='fcnew1')(flatten)
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
-    #detection = Dense(2048, activation='relu', name='fcnew2')(detection)
+    fc1 = Dense(1024, activation='relu', name='fcnew1')(avg_pool)
+    dropout = Dropout(0.4)
     #new - add 1 more dense
-    detection = Dense(4, activation='sigmoid', name='fcnew')(avg_pool)
+    detection = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
     #create custom vgg
     custom_model = Model(inputs = base_model.input, outputs = detection)
     print(custom_model.summary())
 
     #freeze model
-    for layer in custom_model.layers[:-1]:
+    for layer in custom_model.layers[:-4]:
         layer.trainable = False
 
     for n in custom_model.layers:
