@@ -138,7 +138,7 @@ if __name__ == '__main__':
     print(custom_model.summary())
 
     #freeze model
-    for layer in custom_model.layers[:-3]:
+    for layer in custom_model.layers[:-1]:
         layer.trainable = False
 
     for n in custom_model.layers:
