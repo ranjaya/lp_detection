@@ -1,6 +1,7 @@
 ### 06.05.18 | 13.00
-### custom model: + dense 1024 relu w/ kernel_regularizers 0.001
+### custom model: + dense 1024 relu w/ kernel_regularizers 0.0001
 ###               + dense 4    sigmoid
+###               lr = 1e-04
 ###
 from keras.utils.io_utils import HDF5Matrix
 
@@ -132,7 +133,7 @@ if __name__ == '__main__':
     # detection = Dense(4, activation='sigmoid', name='fcnew1')(flatten)
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
-    fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.001))(avg_pool)
+    fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.0001))(avg_pool)
     #dropout = Dropout(0.35)
     #new - add 1 more dense
     detection = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
