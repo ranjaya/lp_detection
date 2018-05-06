@@ -1,5 +1,6 @@
 ### 06.05.18 | 13.00
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.0001 + bias_regularizers 0.0001
+###               + dropout 0.25   
 ###               + dense 4    sigmoid
 ###               lr = 1e-04
 ###
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
     fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.0001), bias_regularizer=regularizers.l2(0.0001))(avg_pool)
-    #dropout = Dropout(0.35)
+    dropout = Dropout(0.25)
     #new - add 1 more dense
     detection = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
