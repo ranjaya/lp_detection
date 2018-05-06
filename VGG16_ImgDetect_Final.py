@@ -1,9 +1,14 @@
+### 06.05.18 | 13.00
+### custom model: + dense 1024 relu w/ kernel_regularizers 0.01
+###               + dense 4    sigmoid
+###
 from keras.utils.io_utils import HDF5Matrix
 
 from keras.applications import VGG16
 from keras.optimizers import Adam
 from keras.models import Model
 from keras.layers import Dense, Flatten, GlobalAveragePooling2D, Conv2D, MaxPooling2D, GlobalAveragePooling2D, Dropout
+from keras import regularizers
 
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import backend as K
@@ -125,11 +130,10 @@ if __name__ == '__main__':
     x = base_model.get_layer('block5_pool').output
     avg_pool = GlobalAveragePooling2D(name='avg_pool')(x)
     # detection = Dense(4, activation='sigmoid', name='fcnew1')(flatten)
-    #detection = Dense(2048, activation='relu', name='fcnew1')(flatten)
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
-    fc1 = Dense(1024, activation='relu', name='fcnew1')(avg_pool)
-    dropout = Dropout(0.4)
+    fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.01))(avg_pool)
+    #dropout = Dropout(0.35)
     #new - add 1 more dense
     detection = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
