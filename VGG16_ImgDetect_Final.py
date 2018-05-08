@@ -25,7 +25,8 @@ def lp_train_generator():
     i=0
     img_data = HDF5Matrix('lp_train.h5','images')
     lbl_data = HDF5Matrix('lp_train.h5','labels')
-    size = 1582
+#   size = 1582
+    size = 2289
 
     while 1:
         img_single = img_data[i % size].reshape((1,320,240,3))
@@ -40,7 +41,8 @@ def lp_valid_generator():
     i=0
     img_data = HDF5Matrix('lp_valid.h5','images')
     lbl_data = HDF5Matrix('lp_valid.h5','labels')
-    size = 339
+#   size = 339
+    size = 286
 
     while 1:
         img_single = img_data[i % size].reshape((1,320,240,3))
@@ -55,7 +57,8 @@ def lp_test_generator():
     i=0
     img_data = HDF5Matrix('lp_test.h5','images')
     lbl_data = HDF5Matrix('lp_test.h5','labels')
-    size = 339
+#   size = 339
+    size = 286
 
     while 1:
         img_single = img_data[i % size].reshape((1,320,240,3))
