@@ -1,6 +1,6 @@
 ### 06.05.18 | 13.00
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.0001 + bias_regularizers 0.0001
-###               + dropout 0.35
+###               + dropout 0.25
 ###               + dense 4    sigmoid
 ###               lr = 1e-04
 ###
@@ -15,10 +15,11 @@ from keras import regularizers
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import backend as K
 
-#jumlah image best sejauh ini = 2260
-#   training = 70%  -> 1582
-#   testing = 15%   -> 339
-#   validation = 15%-> 339
+#update 9 Mei 2018 | 2.39 AM
+#jumlah image best sejauh ini = 1458
+#   training = 80%  -> 1166
+#   testing = 10%   ->  146
+#   validation = 10%->  146
 
 
 def lp_train_generator():
@@ -26,7 +27,7 @@ def lp_train_generator():
     img_data = HDF5Matrix('lp_train.h5','images')
     lbl_data = HDF5Matrix('lp_train.h5','labels')
 #   size = 1582
-    size = 2289
+    size = 1166
 
     while 1:
         img_single = img_data[i % size].reshape((1,320,240,3))
@@ -42,7 +43,7 @@ def lp_valid_generator():
     img_data = HDF5Matrix('lp_valid.h5','images')
     lbl_data = HDF5Matrix('lp_valid.h5','labels')
 #   size = 339
-    size = 286
+    size = 146
 
     while 1:
         img_single = img_data[i % size].reshape((1,320,240,3))
@@ -58,7 +59,7 @@ def lp_test_generator():
     img_data = HDF5Matrix('lp_test.h5','images')
     lbl_data = HDF5Matrix('lp_test.h5','labels')
 #   size = 339
-    size = 286
+    size = 146
 
     while 1:
         img_single = img_data[i % size].reshape((1,320,240,3))
@@ -125,9 +126,9 @@ if __name__ == '__main__':
     #lr = 1e-03
     lr = 1e-04
 
-    train_size = 1582
-    valid_size = 339
-    test_size = 339
+    train_size = 1166
+    valid_size = 146
+    test_size = 146
 
 
     ###model vgg
@@ -138,7 +139,7 @@ if __name__ == '__main__':
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
     fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.0001), bias_regularizer=regularizers.l2(0.0001))(avg_pool)
-    dropout = Dropout(0.35)
+    dropout = Dropout(0.25)
     #new - add 1 more dense
     detection = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
