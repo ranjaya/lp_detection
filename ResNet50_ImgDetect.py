@@ -1,12 +1,14 @@
-### 10.05.18 | 13.00 custom model: + 2 layer [dense 4096 relu] 
+### 10.05.18 | 13.00 custom model: + 2 layer [dense 4096 relu] + bias & kernel reg 0.001 
+###                + dropout 0.5
 ###                + dense 4 sigmoid lr = 1e-04
 ###
 
 from keras.utils.io_utils import HDF5Matrix
 from keras.applications import ResNet50
-from keras.layers import Dense, Flatten
+from keras.layers import Dense, Flatten, Dropout
 from keras.models import Model
 from keras.optimizers import Adam
+from keras import regularizers
 
 from keras.callbacks import ModelCheckpoint, CSVLogger, TensorBoard
 from keras import backend as K
@@ -121,12 +123,12 @@ if __name__ == '__main__':
     print(base_model.summary())
     x = base_model.get_layer('avg_pool').output
     x = Flatten()(x)
-    fc1 = Dense(4096, activation='relu', name='fcnew1')(x)
-    fc2 = Dense(4096, activation='relu', name='fcnew2')(fc1)
-    fc3 = Dense(4, activation='sigmoid', name='fcnew3')(fc2)
+    fc1 = Dense(4096, activation='relu', name='fcnew1',kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(x)
+    dropout = Dropout(0,5)
+    fc2 = Dense(4, activation='sigmoid', name='fcnew3')(fc1)
 
     #create custom ResNet
-    custom_model = Model(inputs=base_model.input, outputs=fc3)
+    custom_model = Model(inputs=base_model.input, outputs=fc2)
     print(custom_model.summary())
 
     #freeze body's model
