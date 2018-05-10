@@ -1,4 +1,4 @@
-### 10.05.18 | 13.00 custom model: + dense 4096 relu 
+### 10.05.18 | 13.00 custom model: + 2 layer [dense 4096 relu] 
 ###                + dense 4 sigmoid lr = 1e-04
 ###
 
@@ -122,14 +122,15 @@ if __name__ == '__main__':
     x = base_model.get_layer('avg_pool').output
     x = Flatten()(x)
     fc1 = Dense(4096, activation='relu', name='fcnew1')(x)
-    fc2 = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
+    fc2 = Dense(4096, activation='relu', name='fcnew2')(fc1)
+    fc3 = Dense(4, activation='sigmoid', name='fcnew3')(fc2)
 
     #create custom ResNet
-    custom_model = Model(inputs=base_model.input, outputs=fc2)
+    custom_model = Model(inputs=base_model.input, outputs=fc3)
     print(custom_model.summary())
 
     #freeze body's model
-    for layer in custom_model.layers[:-2]:
+    for layer in custom_model.layers[:-3]:
         layer.trainable = False
 
     for n in custom_model.layers:
