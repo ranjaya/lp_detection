@@ -1,4 +1,4 @@
-### 10.05.18 | 13.00 custom model: + dense 1024 relu 
+### 10.05.18 | 13.00 custom model: + dense 2048 relu 
 ###                + dense 4 sigmoid lr = 1e-04
 ###
 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     print(base_model.summary())
     x = base_model.get_layer('avg_pool').output
     x = Flatten()(x)
-    fc1 = Dense(1024, activation='relu', name='fcnew1')(x)
+    fc1 = Dense(2048, activation='relu', name='fcnew1')(x)
     fc2 = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
     #create custom ResNet
