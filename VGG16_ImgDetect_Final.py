@@ -2,7 +2,7 @@
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.001 + bias_regularizers 0.001
 ###      tanpa    + dropout 0.1
 ###               + dense 4    sigmoid
-###               lr = 1e-06
+###               lr = 1e-05
 ###
 from keras.utils.io_utils import HDF5Matrix
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     #lr = 1e-03
     #lr = 1e-04
-    lr = 1e-06	
+    lr = 1e-05	
 
     train_size = 1266
     valid_size = 160
@@ -169,7 +169,8 @@ if __name__ == '__main__':
 
     result = custom_model.fit_generator(lp_train_generator(),
             train_size // batch_size,
-            1000,
+            #1000,
+            1500,
             # init_epoch = 0,
             validation_data=lp_valid_generator(),
             validation_steps=valid_size//batch_size,
