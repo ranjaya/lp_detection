@@ -1,3 +1,7 @@
+### 10.05.18 | 13.00 custom model: + dense 1024 relu 
+###                + dense 4 sigmoid lr = 1e-04
+###
+
 from keras.utils.io_utils import HDF5Matrix
 from keras.applications import ResNet50
 from keras.layers import Dense, Flatten
@@ -117,14 +121,15 @@ if __name__ == '__main__':
     print(base_model.summary())
     x = base_model.get_layer('avg_pool').output
     x = Flatten()(x)
-    fc1 = Dense(4, activation='sigmoid', name='fcnew1')(x)
+    fc1 = Dense(1024, activation='relu', name='fcnew1')(x)
+    fc2 = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
     #create custom ResNet
-    custom_model = Model(inputs=base_model.input, outputs=fc1)
+    custom_model = Model(inputs=base_model.input, outputs=fc2)
     print(custom_model.summary())
 
     #freeze body's model
-    for layer in custom_model.layers[:-1]:
+    for layer in custom_model.layers[:-2]:
         layer.trainable = False
 
     for n in custom_model.layers:
