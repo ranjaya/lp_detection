@@ -1,6 +1,6 @@
 ### 06.05.18 | 13.00
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.001 + bias_regularizers 0.001
-###      tanpa    + dropout 0.1
+###      tanpa    + dropout 0.2
 ###               + dense 4    sigmoid
 ###               lr = 1e-05
 ###
@@ -169,8 +169,8 @@ if __name__ == '__main__':
 
     result = custom_model.fit_generator(lp_train_generator(),
             train_size // batch_size,
-            #1000,
-            2000,
+            1000,
+            #2000,
             # init_epoch = 0,
             validation_data=lp_valid_generator(),
             validation_steps=valid_size//batch_size,
