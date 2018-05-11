@@ -170,7 +170,7 @@ if __name__ == '__main__':
     result = custom_model.fit_generator(lp_train_generator(),
             train_size // batch_size,
             #1000,
-            1500,
+            2000,
             # init_epoch = 0,
             validation_data=lp_valid_generator(),
             validation_steps=valid_size//batch_size,
