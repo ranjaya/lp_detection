@@ -1,6 +1,6 @@
-### ADD  2048 relu 
+### ADD  4096 relu + 2048 relu
 ###      4 sigmoid only ###
-### lr = 1e-6
+### lr = 1e-4
 ###
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.001 + bias_regularizers 0.001
 ###      tanpa    + dropout 0.1
@@ -127,9 +127,9 @@ if __name__ == '__main__':
 
     #lr = 1e-02
     #lr = 1e-03
-    #lr = 1e-04
+    lr = 1e-04
     #lr = 1e-05	
-    lr = 1e-06
+    #lr = 1e-06
 
     train_size = 1266
     valid_size = 160
@@ -143,19 +143,19 @@ if __name__ == '__main__':
     #detection = Dense(4, activation='sigmoid', name='fcnew1')(flatten)
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
-    fc1 = Dense(2048, activation ='relu', name='fcnew1')(avg_pool)
+    fc1 = Dense(4096, activation ='relu', name='fcnew1')(avg_pool)
     #fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(avg_pool)
     #dropout = Dropout(0.1)
     #new - add 1 more dense
-    #fc2 = Dense(4096, activation ='relu', name='fcnew2')(fc1)
-    detection = Dense(4, activation='sigmoid', name='fcnew3')(fc1)
+    fc2 = Dense(2048, activation ='relu', name='fcnew2')(fc1)
+    detection = Dense(4, activation='sigmoid', name='fcnew3')(fc2)
 
     #create custom vgg
     custom_model = Model(inputs = base_model.input, outputs = detection)
     print(custom_model.summary())
 
     #freeze model
-    for layer in custom_model.layers[:-2]:
+    for layer in custom_model.layers[:-3]:
         layer.trainable = False
 
     for n in custom_model.layers:
