@@ -1,5 +1,6 @@
-### ADD 4 sigmoid only ###
-### lr = 1e-05
+### ADD  4096 relu 
+###      4 sigmoid only ###
+### lr = 1e-02
 ###
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.001 + bias_regularizers 0.001
 ###      tanpa    + dropout 0.1
@@ -124,10 +125,10 @@ if __name__ == '__main__':
 
     batch_size = 32
 
-    #lr = 1e-02
+    lr = 1e-02
     #lr = 1e-03
     #lr = 1e-04
-    lr = 1e-05	
+    #lr = 1e-05	
 
     train_size = 1266
     valid_size = 160
@@ -138,21 +139,21 @@ if __name__ == '__main__':
     base_model = VGG16(input_shape=(320,240,3),include_top=False,classes=num_classes)
     x = base_model.get_layer('block5_pool').output
     avg_pool = GlobalAveragePooling2D(name='avg_pool')(x)
-    # detection = Dense(4, activation='sigmoid', name='fcnew1')(flatten)
+    #detection = Dense(4, activation='sigmoid', name='fcnew1')(flatten)
     #new - add 1 more dense
     # detection = Dense(4, activation='sigmoid', name='fcnew2')(detection)
-    #fc1 = Dense(1024, activation ='relu', name='fcnew1')(avg_pool)
+    fc1 = Dense(4096, activation ='relu', name='fcnew1')(avg_pool)
     #fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(avg_pool)
     #dropout = Dropout(0.1)
     #new - add 1 more dense
-    detection = Dense(4, activation='sigmoid', name='fcnew2')(avg_pool)
+    detection = Dense(4, activation='sigmoid', name='fcnew2')(fc1)
 
     #create custom vgg
     custom_model = Model(inputs = base_model.input, outputs = detection)
     print(custom_model.summary())
 
     #freeze model
-    for layer in custom_model.layers[:-1]:
+    for layer in custom_model.layers[:-2]:
         layer.trainable = False
 
     for n in custom_model.layers:
