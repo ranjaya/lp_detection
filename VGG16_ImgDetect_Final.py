@@ -1,5 +1,5 @@
 ### ADD 4 sigmoid only ###
-### lr = 1e-04
+### lr = 1e-05
 ###
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.001 + bias_regularizers 0.001
 ###      tanpa    + dropout 0.1
@@ -126,8 +126,8 @@ if __name__ == '__main__':
 
     #lr = 1e-02
     #lr = 1e-03
-    lr = 1e-04
-    #lr = 1e-05	
+    #lr = 1e-04
+    lr = 1e-05	
 
     train_size = 1266
     valid_size = 160
