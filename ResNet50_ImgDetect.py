@@ -1,6 +1,6 @@
 ### 17.05.18 | dense 2048 relu 
 ###            dense 4 sigmoid
-### lr = 0.00001
+### lr = 0.000001
 ###
 ###
 ### 10.05.18 | 13.00 custom model: + 2 layer [dense 2048 relu] + bias & kernel reg 0.001 
@@ -118,8 +118,8 @@ if __name__ == '__main__':
     #lr = 1e-02
     #lr = 1e-03
     #lr = 1e-04
-    lr = 1e-05
-    #lr = 1e-06
+    #lr = 1e-05
+    lr = 1e-06
 
    
     train_size = 1266
