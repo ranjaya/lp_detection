@@ -1,5 +1,9 @@
-### 10.05.18 | 13.00 custom model: + 2 layer [dense 4096 relu] + bias & kernel reg 0.001 
-###                + dropout 0.5
+### 17.05.18 | dense 4 sigmoid
+### lr = 0.01
+###
+###
+### 10.05.18 | 13.00 custom model: + 2 layer [dense 2048 relu] + bias & kernel reg 0.001 
+###                + dropout 0.1
 ###                + dense 4 sigmoid lr = 1e-04
 ###
 
@@ -110,8 +114,9 @@ if __name__ == '__main__':
 
     batch_size = 32
 
+    lr = 1e-02
     # lr = 1e-03
-    lr = 1e-04
+    #lr = 1e-04
 
     train_size = 1266
     valid_size = 160
@@ -123,16 +128,16 @@ if __name__ == '__main__':
     print(base_model.summary())
     x = base_model.get_layer('avg_pool').output
     x = Flatten()(x)
-    fc1 = Dense(4096, activation='relu', name='fcnew1',kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(x)
-    dropout = Dropout(0,5)
-    fc2 = Dense(4, activation='sigmoid', name='fcnew3')(fc1)
+    #fc1 = Dense(2048, activation='relu', name='fcnew1',kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(x)
+    #dropout = Dropout(0.1)
+    fc2 = Dense(4, activation='sigmoid', name='fcnew3')(x)
 
     #create custom ResNet
     custom_model = Model(inputs=base_model.input, outputs=fc2)
     print(custom_model.summary())
 
     #freeze body's model
-    for layer in custom_model.layers[:-3]:
+    for layer in custom_model.layers[:-1]:
         layer.trainable = False
 
     for n in custom_model.layers:
@@ -151,7 +156,8 @@ if __name__ == '__main__':
 
     result = custom_model.fit_generator(lp_train_generator(),
             train_size // batch_size,
-            1000,
+            #1000,
+            100,
             # init_epoch = 0,
             validation_data=lp_valid_generator(),
             validation_steps=valid_size//batch_size,
