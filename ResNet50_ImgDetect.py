@@ -1,5 +1,6 @@
-### 17.05.18 | dense 4 sigmoid
-### lr = 0.000001
+### 17.05.18 | dense 4096 relu
+###            dense 4 sigmoid
+### lr = 0.01
 ###
 ###
 ### 10.05.18 | 13.00 custom model: + 2 layer [dense 2048 relu] + bias & kernel reg 0.001 
@@ -114,11 +115,11 @@ if __name__ == '__main__':
 
     batch_size = 32
 
-    #lr = 1e-02
+    lr = 1e-02
     #lr = 1e-03
     #lr = 1e-04
     #lr = 1e-05
-    lr = 1e-06
+    #lr = 1e-06
 
     train_size = 1266
     valid_size = 160
@@ -130,9 +131,10 @@ if __name__ == '__main__':
     print(base_model.summary())
     x = base_model.get_layer('avg_pool').output
     x = Flatten()(x)
-    #fc1 = Dense(2048, activation='relu', name='fcnew1',kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(x)
+    #fc1 = Dense(4096, activation='relu', name='fcnew1',kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(x)
     #dropout = Dropout(0.1)
-    fc2 = Dense(4, activation='sigmoid', name='fcnew3')(x)
+    fc1 = Dense(4096, activation='relu', name='fcnew1')(x)
+    fc2 = Dense(4, activation='sigmoid', name='fcnew3')(fc1)
 
     #create custom ResNet
     custom_model = Model(inputs=base_model.input, outputs=fc2)
