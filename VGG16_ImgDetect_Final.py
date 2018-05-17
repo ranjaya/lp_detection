@@ -1,6 +1,6 @@
-### ADD  4096 relu + 8192 relu
+### ADD  4096 relu
 ###      4 sigmoid only ###
-### lr = 1e-7
+### lr = 1e-05
 ###
 ### custom model: + dense 1024 relu w/ kernel_regularizers 0.001 + bias_regularizers 0.001
 ###      tanpa    + dropout 0.1
@@ -127,9 +127,9 @@ if __name__ == '__main__':
     #lr = 1e-02
     #lr = 1e-03
     #lr = 1e-04
-    #lr = 1e-05	
+    lr = 1e-05	
     #lr = 1e-06
-    lr = 1e-07
+    #lr = 1e-07
 
     train_size = 1266
     valid_size = 160
@@ -147,15 +147,15 @@ if __name__ == '__main__':
     #fc1 = Dense(1024, activation='relu', name='fcnew1', kernel_regularizer=regularizers.l2(0.001), bias_regularizer=regularizers.l2(0.001))(avg_pool)
     #dropout = Dropout(0.1)
     #new - add 1 more dense
-    fc2 = Dense(8192, activation ='relu', name='fcnew2')(fc1)
-    detection = Dense(4, activation='sigmoid', name='fcnew3')(fc2)
+    #fc2 = Dense(8192, activation ='relu', name='fcnew2')(fc1)
+    detection = Dense(4, activation='sigmoid', name='fcnew3')(fc1)
 
     #create custom vgg
     custom_model = Model(inputs = base_model.input, outputs = detection)
     print(custom_model.summary())
 
     #freeze model
-    for layer in custom_model.layers[:-3]:
+    for layer in custom_model.layers[:-2]:
         layer.trainable = False
 
     for n in custom_model.layers:
@@ -175,8 +175,8 @@ if __name__ == '__main__':
 
     result = custom_model.fit_generator(lp_train_generator(),
             train_size // batch_size,
-            100,
-            #2000,
+            #100,
+            1000,
             # init_epoch = 0,
             validation_data=lp_valid_generator(),
             validation_steps=valid_size//batch_size,
